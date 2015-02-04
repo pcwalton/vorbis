@@ -1,0 +1,45 @@
+CC ?= gcc
+AR ?= ar
+
+OGG_OUTDIR ?= $(shell find $(OUT_DIR)/../.. -name 'ogg-*' '(' -type d -or -type l ')')/out
+
+CFLAGS += -Iinclude $(patsubst %,-I%/include,$(OGG_OUTDIR)) -O2 -fPIC
+
+VORBIS_SRC = \
+	$(addprefix lib/,\
+		mdct.c \
+		smallft.c \
+		block.c \
+		envelope.c \
+		window.c \
+		lsp.c \
+		lpc.c \
+		analysis.c \
+		synthesis.c \
+		psy.c \
+		info.c \
+		floor1.c \
+		floor0.c \
+		res0.c \
+		mapping0.c \
+		registry.c \
+		codebook.c \
+		sharedbook.c \
+		lookup.c \
+		bitrate.c)
+
+VORBIS_OBJS = $(patsubst %.c,$(OUT_DIR)/%.o,$(VORBIS_SRC))
+
+.PHONY:	all clean
+
+all:	$(OUT_DIR)/librustvorbis.a
+
+clean:
+	rm -f $(OUT_DIR)/librustvorbis.a $(VORBIS_OBJS)
+
+$(OUT_DIR)/%.o:	%.c
+	mkdir -p `dirname $@` && $(CC) -c $(CFLAGS) -o $@ $<
+
+$(OUT_DIR)/librustvorbis.a:	$(VORBIS_OBJS)
+	$(AR) rcs $@ $(VORBIS_OBJS)
+

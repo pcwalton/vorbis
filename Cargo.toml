@@ -1,0 +1,18 @@
+[package]
+
+name = "vorbis-sys"
+version = "0.1.0"
+authors = ["The Vorbis Project Developers"]
+
+build = "build.rs"
+
+[lib]
+
+name = "vorbis-sys"
+path = "lib.rs"
+
+[dependencies.ogg-sys]
+
+git = "https://github.com/pcwalton/ogg"
+branch = "servo"
+
